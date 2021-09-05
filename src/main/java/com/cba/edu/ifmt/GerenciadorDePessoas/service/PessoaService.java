@@ -9,6 +9,7 @@ import com.cba.edu.ifmt.GerenciadorDePessoas.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,10 +32,7 @@ public class PessoaService {
         Pessoa pessoaParaSalva = pessoaMapper.toModel(pessoaDTO);
 
         Pessoa pessoaSalva = pessoaRepository.save(pessoaParaSalva);
-        return MessageResponseDTO
-                .builder()
-                .message("Pessoa criada com o id : " + pessoaSalva.getId())
-                .build();
+        return createMessageResponse(pessoaSalva, "Pessoa criada com o id : ");
     }
 
     public List<PessoaDTO> listaAll() {
@@ -53,6 +51,23 @@ public class PessoaService {
         VerificaSeExiste(Id);
         pessoaRepository.deleteById(Id);
     }
+
+    @PutMapping
+    public MessageResponseDTO ModificaPorId(Long Id, PessoaDTO pessoaDTO) throws PessoaNotFoundExeption {
+        VerificaSeExiste(Id);
+        Pessoa pessoaParaModificar = pessoaMapper.toModel(pessoaDTO);
+
+        Pessoa pessoaModificada = pessoaRepository.save(pessoaParaModificar);
+        return createMessageResponse(pessoaModificada, "Pessoa Modificada com o id : ");
+    }
+
+    private MessageResponseDTO createMessageResponse(Pessoa pessoa, String s) {
+        return MessageResponseDTO
+                .builder()
+                .message(s + pessoa.getId())
+                .build();
+    }
+
 
     private Pessoa VerificaSeExiste(Long Id) throws PessoaNotFoundExeption {
         return pessoaRepository.findById(Id).orElseThrow(() -> new PessoaNotFoundExeption(Id));
