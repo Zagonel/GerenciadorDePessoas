@@ -39,4 +39,10 @@ public class PessoaController {
     public PessoaDTO procuraPorId(@PathVariable Long Id) throws PessoaNotFoundExeption {
         return pessoaService.procuraPorId(Id);
     }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletaPorId(@PathVariable Long Id) throws PessoaNotFoundExeption {
+        pessoaService.delete(Id);
+    }
 }
